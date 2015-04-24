@@ -85,11 +85,12 @@ custom_git() {
 	
 	sub_commands="^test|^merge|^commit"
 	
-	if [ -n $1 ] && [[ $1 == "branch" ]]
+	if [ -n $1 ]
 	then 
 	
 		if [ -f ${git_dir_path}/hooks/pre-${1} ]
 		then
+			#TODO:  Do not run it if is a default git hook
 			${git_dir_path}/hooks/pre-${1} "$@"
 		elif [ -f ${SCRIPT_DIR}/hooks/pre-${1} ]
 		then 

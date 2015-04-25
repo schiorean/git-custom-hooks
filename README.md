@@ -10,10 +10,10 @@ Edit `~/.bash_profile` and add as source the `git-custom-hooks` file
 
 # Usage
 
-If you want to apply the hook for all ripositories on your pc, put the hook file on `/hooks` folder from this repository.
+If you want to apply the hook for all repositories on your pc, put the hook file on `/hooks` folder from this repository.
 If you want a hook to be applied just for an particular repository, put the hook file on `.git/hooks` folder from the repository
 
-Name of hooks must be `pre-<sub-command-name>` or `post-<sub-command-name>` <br/>
+Name of hook must be `pre-<sub-command-name>` or `post-<sub-command-name>` <br/>
 Like:
 
 - pre-merge

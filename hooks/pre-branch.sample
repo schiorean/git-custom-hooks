@@ -1,9 +1,24 @@
 #!/bin/sh
+# An example hook script to verify from which branch you want to create the new one.
+# Called by "git branch" with one argument.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the creating of new branch.
+#
+# The goal of this hook is to alert the user that he want to create a new branch from a dev branch.
+# Assuming that the workflow is to have 3 categories of branches dev, production, feature, 
+# we will won't start a feature branch from dev branch, because when we want to put the feature in production
+# all changes from dev branch will go in production. 
+#
+# To enable this hook, rename this file to "pre-branch".
+#
 # Color definitions (taken from Color Bash Prompt HowTo).
 # Some colors might look different of some terminals.
 # For example, I see 'Bold Red' as 'orange' on my screen,
 # hence the 'Green' 'BRed' 'Red' sequence I often use in my prompt.
 
+################################################################################
+#######   THI IS AN EXAMPLE, YOU CAN CHANGE IT HOW TO YOU WANT  ################
+################################################################################
 
 # Normal Colors
 Black='\e[0;30m'        # Black
@@ -37,20 +52,17 @@ On_White='\e[47m'       # White
 
 NC="\e[0m"               # Color Reset
 
-
+#get the current branch
 branch=$(\git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 branch=$(echo "$branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
-
-if [ -z $branch ]
-then
-	exit 1
-fi
 
 COLOR="BGreen";
 branch=$(printf ${!COLOR}$branch${NC})
 MSG=$(printf " ${BRed} Are you sure that you want to create new branch starting from ${branch} ${BRed} ? (Y/n) ${NC}")
 MSG2=$(printf " ${BRed} Aborted!\n ${NC}")
 
+#check if we have 2 arguments, first is the subcommand merge and the second must be the name of new branch
+#if the current branch contain dev word, we ask the user if is sure taht want to create new branch starting from a dev branch
 if [[ $branch == *"dev"* ]] && [ $# -eq 2 ] && [ -n $2 ] 
 then
 	# Allows us to read user input below, assigns stdin to keyboard

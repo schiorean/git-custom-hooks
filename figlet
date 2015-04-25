@@ -173,25 +173,25 @@ function outArg
   echo
   for ((r=0; r<8; r++))
   do
-    printf  "%-*.*s" "${COLUMNS:-80}" "${COLUMNS:-80}" "${raw[r]}"
+    printf  "%-*.*s\n" "${COLUMNS:-80}" "${COLUMNS:-80}" "${raw[r]}"
     raw[r]=""
   done
 }
 
 figlet(){
-	for i in "$@"
-	do
-	case $i in
-		-c=*|--color=*)
-		COLOR="${i#*=}"
-		shift
-		;;
-	esac
-	done
+    for i in "$@"
+    do
+    case $i in
+        -c=*|--color=*)
+        COLOR="${i#*=}"
+        shift
+        ;;
+    esac
+    done
 
-	for i
-	do
-	  outArg "$i"
-	  echo
-	done
+    for i
+    do
+      outArg "$i"
+      echo
+    done
 }

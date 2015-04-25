@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #-------------------------------------------------------------
 # Greeting, motd etc. ...
 #-------------------------------------------------------------
@@ -8,6 +8,11 @@
 # For example, I see 'Bold Red' as 'orange' on my screen,
 # hence the 'Green' 'BRed' 'Red' sequence I often use in my prompt.
 
+alias git=custom_git
+
+#cd_reminder will print the name of root folder from any git repo when you will change directory on it 
+#to disable this function just comment the next line (put the # at the start of the line)
+alias cd=reminder_cd
 
 # Normal Colors
 Black='\e[0;30m'        # Black
@@ -42,27 +47,12 @@ On_White='\e[47m'       # White
 NC="\e[0m"               # Color Reset
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
 source $SCRIPT_DIR/figlet
 
-
 get_repo_data(){
-	repo_info="$(\git rev-parse --git-dir --is-inside-git-dir \
-		--is-bare-repository --is-inside-work-tree \
-		--short HEAD 2>/dev/null)"
-
+	repo_info="$(\git rev-parse --git-dir HEAD 2>/dev/null)"
 	rev_parse_exit_code="$?"
-	bk_repo_info=$repo_info
-	short_sha=''
-	if [ "$rev_parse_exit_code" = "0" ]; then
-		short_sha="${repo_info##*$'\n'}"
-		repo_info="${repo_info%$'\n'*}"
-	fi
-
-	inside_worktree="${repo_info##*$'\n'}"
-	repo_info="${repo_info%$'\n'*}"
-	bare_repo="${repo_info##*$'\n'}"
-	repo_info="${repo_info%$'\n'*}"
-	inside_gitdir="${repo_info##*$'\n'}"
 	git_dir_path="${repo_info%$'\n'*}"
 }
 
@@ -70,8 +60,10 @@ get_repo_data
 
 reminder_cd() {
 	builtin cd "$@" && {
+		#show the project name with figlet only if the project is not the current script folder because we use cd command on line 49 to get the current script path
 		get_repo_data
-		if [[ $git_dir_path == ".git" ]]
+		#if git_dir_path is .git that mean we are on root folder of project
+		if [[ $git_dir_path == ".git" ]] && [[ $@ != "$( dirname "${BASH_SOURCE[0]}")" ]]
 		then
 			figlet -c=BRed ${PWD##*/}
 		fi
@@ -79,46 +71,76 @@ reminder_cd() {
 }
 
 custom_git() {
-	
-	branch=$(\git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-	branch=$(echo "$branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
-	
-	sub_commands="^test|^merge|^commit"
-	
-	if [ -n $1 ] && [[ $1 == "branch" ]]
-	then 
-	
-		if [ -f ${git_dir_path}/hooks/pre-${1} ]
-		then
-			${git_dir_path}/hooks/pre-${1} "$@"
-		elif [ -f ${SCRIPT_DIR}/hooks/pre-${1} ]
-		then 
-			${SCRIPT_DIR}/hooks/pre-${1} "$@"
-		fi
-		hook_exit_code="$?"
 		
-		if [ $hook_exit_code -eq '0' ]
-		then
-			\git "$@"
-		fi
-		
-		if [ -f ${git_dir_path}/hooks/post-${1} ]
-		then
-			${git_dir_path}/hooks/post-${1} "$@"
-		elif [ -f ${SCRIPT_DIR}/hooks/post-${1} ]
-		then 
-			${SCRIPT_DIR}/hooks/post-${1} "$@"
-		fi
-	else
+	#if is a default git hook, like pre-commit set to true, to can be ignored by this script
+	case $1 in
+		commit | push | rebase)
+		  is_default_hook=true;
+		  ;;
+		*)
+		  is_default_hook=false;
+		  ;;
+	esac
+
+	#run pre hooks
+	run_pre_hook "$@"
+
+	#if exist code from hook is 0 then we can continue to execute git command
+	hook_exit_code="$?"
+	if [ $hook_exit_code -eq '0' ]; then
 		\git "$@"
 	fi
-	
-	
+
+	#if is a default git hook, like post-update set to true, to can be ignored by this script
+	case $1 in
+		update)
+		is_default_hook=true;
+		  ;;
+		*)
+		is_default_hook=false;
+		  ;;
+	esac
+
+	#run post hooks
+	run_post_hook "$@"
 }
 
-alias git=custom_git
+run_pre_hook() {
 
-#cd_reminder will print the name of root folder from any git repo when you will change directory on it 
-#to disable this function just comment the next line (put the # at the start of the line)
-alias cd=reminder_cd
+	#set pre hooks paths
+	def_pre_hook="${git_dir_path}/hooks/pre-$1"
+	custom_pre_hook="${SCRIPT_DIR}/hooks/pre-$1"
+	
+	#if pre hook is set on project then execute it and ignore the default one
+    if [ -f $def_pre_hook ]; then
+		#if the hook is one of the git default hooks, ignore it because is executed by git 
+		if [ ! $is_default_hook ]; then
+			#execute pre hook if is custom one
+			$def_pre_hook "$@"
+		fi
+	#if pre hook is not set on the project, check if is set on default hooks folder from this script
+	elif [ -f $custom_pre_hook ]; then 
+		#execute the general custom pre hook
+		$custom_pre_hook "$@"
+	fi
+}
 
+run_post_hook() {
+
+	#set post hooks paths
+	def_post_hook="${git_dir_path}/hooks/post-$1"
+	custom_post_hook="${SCRIPT_DIR}/hooks/post-$1"
+
+	#if post hook is set on project then execute it and ignore the default one
+    if [ -f $def_post_hook ]; then
+		#if the hook is one of the git default hooks, ignore it because is executed by git
+        if [ ! $is_default_hook ]; then
+			#execute post hook if is custom one
+            $def_post_hook "$@"
+        fi
+	#if post hook is not set on the project, check if is set on default hooks folder from this script
+    elif [ -f $custom_post_hook ]; then 
+		#execute the general custom post hook
+        $custom_post_hook "$@"
+    fi
+}

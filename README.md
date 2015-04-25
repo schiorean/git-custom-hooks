@@ -1,6 +1,6 @@
 # Git Custom Hooks
 
-This script let you to set the custom pre and post hooks for git subcommands.
+Using this script you can customize the pre and post hooks for git.
 
 # Installation
 

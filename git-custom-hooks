@@ -72,21 +72,6 @@ reminder_cd() {
 
 custom_git() {
 	
-	branch=$(\git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-	branch=$(echo "$branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
-	
-	sub_commands="^test|^merge|^commit"
-	
-        if [ -f ${git_dir_path}/hooks/pre-${1} ]
-        then
-                #TODO:  Do not run it if is a default git hook
-                ${git_dir_path}/hooks/pre-${1} "$@"
-        elif [ -f ${SCRIPT_DIR}/hooks/pre-${1} ]
-        then 
-                ${SCRIPT_DIR}/hooks/pre-${1} "$@"
-        fi
-        hook_exit_code="$?"
-		
 	#if is a default git hook, like pre-commit set to true, to can be ignored by this script
 	case $1 in
 		commit | push | rebase)

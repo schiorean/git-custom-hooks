@@ -194,4 +194,6 @@ figlet(){
       outArg "$i"
       echo
     done
+
+    printf ${NC}
 }

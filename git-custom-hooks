@@ -8,11 +8,7 @@
 # For example, I see 'Bold Red' as 'orange' on my screen,
 # hence the 'Green' 'BRed' 'Red' sequence I often use in my prompt.
 
-alias git=custom_git
 
-#cd_reminder will print the name of root folder from any git repo when you will change directory on it 
-#to disable this function just comment the next line (put the # at the start of the line)
-alias cd=reminder_cd
 
 # Normal Colors
 Black='\e[0;30m'        # Black
@@ -144,3 +140,10 @@ run_post_hook() {
         $custom_post_hook "$@"
     fi
 }
+
+
+alias git=custom_git
+
+#cd_reminder will print the name of root folder from any git repo when you will change directory on it 
+#to disable this function just comment the next line (put the # at the start of the line)
+alias cd=reminder_cd

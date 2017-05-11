@@ -48,5 +48,5 @@ If you have conflicts, all process is stopped and you have to fix the conflicts 
 
 > `git push`
 
-> `git checkout branch_where_you_was
+> `git checkout branch_where_you_was`
 

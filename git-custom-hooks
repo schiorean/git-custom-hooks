@@ -217,7 +217,7 @@ publish()
 	
 	printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
 	git checkout "$cur_branch"
-}
+}   
 
 alias git=custom_git
 alias cd=reminder_cd

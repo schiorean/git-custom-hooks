@@ -193,11 +193,6 @@ publish()
 
     printf "\n$BCyan--- Reset to origin ---$NC\n"
     git reset --hard origin/$br_to_pub
-
-	hook_exit_code="$?"
-	if [ $hook_exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
-	fi
 	
 	hook_exit_code="$?"
 	if [ $hook_exit_code -gt "0" ]; then

@@ -22,14 +22,17 @@ Like:
 
 # Custom commands
 
-1. Custom commit command.
+### Custom commit command.
+
 Usage:
 > gc your custom commit message
   
 What will execute
 > git commit -am '#current_branch your custom commit message'
 
-2. Publish method.
+
+
+### Publish method.
 Usage:
 > pb branch_to_publish your custom commit message
 

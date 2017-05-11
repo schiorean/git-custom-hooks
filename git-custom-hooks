@@ -48,6 +48,10 @@ NC="\e[0m"               # Color Reset
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
+# Disable openinig the editor on git merge
+GIT_MERGE_AUTOEDIT=no
+export GIT_MERGE_AUTOEDIT
+
 source $SCRIPT_DIR/figlet
 
 get_repo_data(){
@@ -147,6 +151,7 @@ run_post_hook() {
 
 
 
+
 git_commit ()
 {
 	
@@ -161,7 +166,7 @@ git_commit ()
 		message="#${branch} ${message}";
 	fi
 	
-	git commit -am "$message"
+	git commit --no-edit -am "$message"
 }
 
 publish()
@@ -173,7 +178,7 @@ publish()
 	
 	printf "\n$BCyan--- Commit changes ---$NC\n"
 	
-	git commit -am "$message"
+	git commit  --no-edit -am "$message"
 	hook_exit_code="$?"
 	if [ $hook_exit_code -gt "0" ]; then
 		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
@@ -183,13 +188,16 @@ publish()
 	printf "\n$BCyan--- Checkout branch $br_to_pub ---$NC\n"
 	git checkout "$br_to_pub"
 	
+    printf "\n$BCyan--- Fetch changes from remote ---$NC\n"
+    git fetch
+
+    printf "\n$BCyan--- Reset to origin ---$NC\n"
+    git reset --hard origin/$br_to_pub
+
 	hook_exit_code="$?"
 	if [ $hook_exit_code -gt "0" ]; then
 		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
 	fi
-	
-	printf "\n$BCyan--- Pull  ---$NC\n"
-	git pull
 	
 	hook_exit_code="$?"
 	if [ $hook_exit_code -gt "0" ]; then

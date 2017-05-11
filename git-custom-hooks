@@ -10,6 +10,10 @@
 
 
 
+#cd_reminder will print the name of root folder from any git repo when you will change directory on it 
+#to disable this function just comment the next line (put the # at the start of the line)
+
+
 # Normal Colors
 Black='\e[0;30m'        # Black
 Red='\e[0;31m'          # Red
@@ -67,22 +71,7 @@ reminder_cd() {
 }
 
 custom_git() {
-    
-        # Add the issue number tu the commit message
-        #get the current branch
-	branch=$(\git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-	branch=$(echo "$branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
-
-        if [[ $branch == [0-9]* ]]; then
-            if [[ "$1" == "commit" ]]; then
-                case $2 in
-                    "-m" | "-am" )
-                        set -- "${@:1:2}" "#$branch $3"
-                    ;;
-                esac
-            fi
-	fi
-
+	
 	#if is a default git hook, like pre-commit set to true, to can be ignored by this script
 	case $1 in
 		commit | push | rebase)
@@ -157,8 +146,77 @@ run_post_hook() {
 }
 
 
-alias git=custom_git
 
-#cd_reminder will print the name of root folder from any git repo when you will change directory on it 
-#to disable this function just comment the next line (put the # at the start of the line)
+git_commit ()
+{
+	
+	#get the current branch
+	branch=$(git branch | sed -n -e 's/\* //p')
+	branch=$(echo "$branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
+	
+	message="$*"
+	
+	if [[ $branch == [0-9]* ]]
+	then
+		message="#${branch} ${message}";
+	fi
+	
+	git commit -am "$message"
+}
+
+publish()
+{
+	br_to_pub=$1
+	cur_branch=$(git branch | sed -n -e 's/\* //p')
+	cur_branch=$(echo "$cur_branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
+	message="#${cur_branch} ${*:2}"
+	
+	printf "\n$BCyan--- Commit changes ---$NC\n"
+	
+	git commit -am "$message"
+	hook_exit_code="$?"
+	if [ $hook_exit_code -gt "0" ]; then
+		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+	fi
+	
+	
+	printf "\n$BCyan--- Checkout branch $br_to_pub ---$NC\n"
+	git checkout "$br_to_pub"
+	
+	hook_exit_code="$?"
+	if [ $hook_exit_code -gt "0" ]; then
+		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+	fi
+	
+	printf "\n$BCyan--- Pull  ---$NC\n"
+	git pull
+	
+	hook_exit_code="$?"
+	if [ $hook_exit_code -gt "0" ]; then
+		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+	fi
+	
+	printf "\n$BCyan--- Merge $cur_branch into $br_to_pub ---$NC\n"
+	git merge "$cur_branch"
+	
+	hook_exit_code="$?"
+	if [ $hook_exit_code -gt "0" ]; then
+		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+	fi
+	
+	printf "\n$BCyan--- Push changes into $br_to_pub ---$NC\n"
+	git push
+	
+	hook_exit_code="$?"
+	if [ $hook_exit_code -gt "0" ]; then
+		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+	fi
+	
+	printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
+	git checkout "$cur_branch"
+}
+
+alias git=custom_git
 alias cd=reminder_cd
+alias pb=publish
+alias gc=git_commit

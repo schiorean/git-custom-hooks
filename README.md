@@ -34,12 +34,19 @@ Usage:
 > pb branch_to_publish your custom commit message
 
 What will execute:
-> git commit --no-edit -am '#curent_branch your custom commit message'
-> git checkout branch_to_publish
-> git fetch
-> git reset --hard origin/branch_to_publish
-> git merge branch_where_you_was 
+> `git commit --no-edit -am '#curent_branch your custom commit message'`
+
+> `git checkout branch_to_publish`
+
+> `git fetch`
+
+> `git reset --hard origin/branch_to_publish`
+
+> `git merge branch_where_you_was`
+
 If you have conflicts, all process is stopped and you have to fix the conflicts and crun next commands manually
-> git push
-> git checkout branch_where_you_was
+
+> `git push`
+
+> `git checkout branch_where_you_was
 

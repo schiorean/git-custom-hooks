@@ -22,11 +22,24 @@ Like:
 
 # Custom commands
 
-Custom commit command will run "git commit -am '#current_branch $message'"
-> gc message
+1. Custom commit command.
+Usage:
+> gc your custom commit message
+  
+What will execute
+> git commit -am '#current_branch your custom commit message'
 
-Publish method will execute an set of git commands:
-1. gc $message
-2. git checkout $pub_branch
-3. git fetch
-4. git reset --hard origin/$pub_branch
+2. Publish method.
+Usage:
+> pb branch_to_publish your custom commit message
+
+What will execute:
+> git commit --no-edit -am '#curent_branch your custom commit message'
+> git checkout branch_to_publish
+> git fetch
+> git reset --hard origin/branch_to_publish
+> git merge branch_where_you_was 
+If you have conflicts, all process is stopped and you have to fix the conflicts and crun next commands manually
+> git push
+> git checkout branch_where_you_was
+

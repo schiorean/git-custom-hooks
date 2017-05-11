@@ -19,3 +19,14 @@ Like:
 - pre-merge
 - pre-branch
 - pre-pull
+
+# Custom commands
+
+Custom commit command will run "git commit -am '#current_branch $message'"
+> gc message
+
+Publish method will execute an set of git commands:
+1. gc $message
+2. git checkout $pub_branch
+3. git fetch
+4. git reset --hard origin/$pub_branch

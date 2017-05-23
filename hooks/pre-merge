@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # An example hook script to verify what is about to be merged.
 # Called by "git merge". The hook should exit with non-zero 
 # status after issuing an appropriate message if

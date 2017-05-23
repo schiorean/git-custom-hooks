@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # An example hook script to verify from which branch you want to create the new one.
 # Called by "git branch" with one argument.  The hook should
 # exit with non-zero status after issuing an appropriate message if

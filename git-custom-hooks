@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------
 # Greeting, motd etc. ...
 #-------------------------------------------------------------
@@ -166,7 +166,7 @@ git_commit ()
 		message="#${branch} ${message}";
 	fi
 	
-	git commit --no-edit -am "$message"
+	custom_git commit --no-edit -am "$message"
 }
 
 publish()
@@ -180,8 +180,8 @@ publish()
 	
 	git commit  --no-edit -am "$message"
 	hook_exit_code="$?"
-	if [ $hook_exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+	if [ $hook_exit_code -gt "1" ]; then
+		printf " ${BRed} Aborted!\n ${NC}"; return;
 	fi
 	
 	
@@ -196,7 +196,7 @@ publish()
 	
 	hook_exit_code="$?"
 	if [ $hook_exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+		printf " ${BRed} Aborted!\n ${NC}"; return;
 	fi
 	
 	printf "\n$BCyan--- Merge $cur_branch into $br_to_pub ---$NC\n"
@@ -204,7 +204,7 @@ publish()
 	
 	hook_exit_code="$?"
 	if [ $hook_exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+		printf " ${BRed} Aborted!\n ${NC}"; return;
 	fi
 	
 	printf "\n$BCyan--- Push changes into $br_to_pub ---$NC\n"
@@ -212,7 +212,7 @@ publish()
 	
 	hook_exit_code="$?"
 	if [ $hook_exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; exit 1;
+		printf " ${BRed} Aborted!\n ${NC}"; return;
 	fi
 	
 	printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"

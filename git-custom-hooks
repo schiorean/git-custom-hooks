@@ -53,6 +53,9 @@ GIT_MERGE_AUTOEDIT=no
 export GIT_MERGE_AUTOEDIT
 
 source $SCRIPT_DIR/figlet
+source $SCRIPT_DIR/git-completion.bash
+
+__git_complete pb _git_checkout
 
 get_repo_data(){
 	repo_info="$(\git rev-parse --git-dir HEAD 2>/dev/null)"

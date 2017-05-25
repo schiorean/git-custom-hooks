@@ -54,6 +54,10 @@ export GIT_MERGE_AUTOEDIT
 
 source $SCRIPT_DIR/figlet
 source $SCRIPT_DIR/git-completion.bash
+source $SCRIPT_DIR/git-prompt.sh
+
+#GIT_PS1_SHOWCOLORHINTS=true
+#PROMPT_COMMAND='__git_ps1 "\e[0;32m\u@\h \e[0;33m\w" "\e[0m\n\\\$ "'
 
 __git_complete pb _git_checkout
 
@@ -184,7 +188,7 @@ publish()
 	git commit  --no-edit -am "$message"
 	exit_code="$?"
 	if [ $exit_code -gt "1" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; 
+#        printf " ${BRed} Aborted!\n ${NC}"; 
         return 1;
 	fi
 	
@@ -206,7 +210,9 @@ publish()
 
     exit_code="$?"
 	if [ $exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; 
+		if [ $exit_code -eq "1" ]; then
+		    printf " ${BRed} Aborted!\n ${NC}"; 
+        fi
         return 1;
 	fi
 	
@@ -216,7 +222,9 @@ publish()
 	
 	exit_code="$?"
 	if [ $exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; 
+		if [ $exit_code -eq "1" ]; then
+		    printf " ${BRed} Aborted!\n ${NC}"; 
+        fi
         return 1;
 	fi
 	
@@ -225,7 +233,9 @@ publish()
 	
 	exit_code="$?"
 	if [ $exit_code -gt "0" ]; then
-#		printf " ${BRed} Aborted!\n ${NC}"; 
+		if [ $exit_code -eq "1" ]; then
+		    printf " ${BRed} Aborted!\n ${NC}"; 
+        fi
         
         printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
         git checkout "$cur_branch"
@@ -237,13 +247,16 @@ publish()
 	
 	exit_code="$?"
 	if [ $exit_code -gt "0" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; 
+		if [ $exit_code -eq "1" ]; then
+		    printf " ${BRed} Aborted!\n ${NC}"; 
+        fi
         return 1;
 	fi
 	
 	printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
 	git checkout "$cur_branch"
 }   
+
    
 
 alias git=custom_git

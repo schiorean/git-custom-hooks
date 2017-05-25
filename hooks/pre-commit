@@ -88,7 +88,7 @@ while true; do
   fi
   case $yn in
       [Yy] ) exit 0; break;; #exit 0 continue with git command
-      [Nn] ) printf " ${BRed} Aborted!\n ${NC}"; exit 2;;  #exit 2 stop the git execution
+      [Nn] ) printf " ${BRed} Aborted!\n ${NC}"; exit 1;;  #exit 1 stop the git execution
       * ) echo "Please answer y or n for yes or no.";;
   esac
 done

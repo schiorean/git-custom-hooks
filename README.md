@@ -20,6 +20,19 @@ Like:
 - pre-branch
 - pre-pull
 
+# Custom prompt
+  If you want a custom prompt which show you the current git branch, like this:
+  > user@hostname ~/work/directory (current_branch_name)
+  You have to edit `git-custom-hooks` and uncomment lines 59 and 60
+  
+  From:
+  > #GIT_PS1_SHOWCOLORHINTS=true
+  > #PROMPT_COMMAND='__git_ps1 "\e[0;32m\u@\h \e[0;33m\w" "\e[0m\n\\\$ "'
+  
+  To:
+  > GIT_PS1_SHOWCOLORHINTS=true
+  > PROMPT_COMMAND='__git_ps1 "\e[0;32m\u@\h \e[0;33m\w" "\e[0m\n\\\$ "'
+
 # Custom commands
 
 ### Custom commit command.

@@ -243,7 +243,7 @@ publish()
 	fi
 	
 	printf "\n$BCyan--- Push changes into $br_to_pub ---$NC\n"
-	git push
+	git push origin $br_to_pub
 	
 	exit_code="$?"
 	if [ $exit_code -gt "0" ]; then

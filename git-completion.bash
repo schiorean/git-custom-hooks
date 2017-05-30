@@ -3095,7 +3095,6 @@ __git_main ()
 		esac
 		((c++))
 	done
-    echo $command
 
 	if [ -z "$command" ]; then
 		case "$prev" in

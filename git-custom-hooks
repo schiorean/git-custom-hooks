@@ -119,8 +119,12 @@ custom_git() {
 run_pre_hook() {
 
 	#set pre hooks paths
-	def_pre_hook="${git_dir_path}/hooks/pre-$1"
-	custom_pre_hook="${SCRIPT_DIR}/hooks/pre-$1"
+	def_pre_hook="${git_dir_path}/hooks/pre-$1";
+	custom_pre_hook="${SCRIPT_DIR}/hooks/pre-$1";
+
+	if [ $1 == 'checkout' ] && [ $2 == '-b' ]; then
+        custom_pre_hook="${SCRIPT_DIR}/hooks/pre-branch";
+	fi
 	
 	#if pre hook is set on project then execute it and ignore the default one
     if [ -f $def_pre_hook ]; then

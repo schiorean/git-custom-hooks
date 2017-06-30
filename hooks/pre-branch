@@ -63,7 +63,7 @@ MSG2=$(printf " ${BRed} Aborted!\n ${NC}")
 
 #check if we have 2 arguments, first is the subcommand merge and the second must be the name of new branch
 #if the current branch contain dev word, we ask the user if is sure taht want to create new branch starting from a dev branch
-if [[ $branch == *"dev"* ]] && [ $# -gt 1 ] && [ -n $2 ]
+if [[ $branch == *"dev"* ]] && [ $# -gt 1 ] && [ -n $2 ] && ([[ $2 =~ ^-[b] ]] || [[ ! $2 =~ ^- ]]);
 then
 	# Allows us to read user input below, assigns stdin to keyboard
 	exec < /dev/tty

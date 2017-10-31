@@ -96,12 +96,11 @@ custom_git() {
 	#run pre hooks
 	run_pre_hook "$@"
 
+    printf "Exit $? \n";
 	#if exist code from hook is 0 then we can continue to execute git command
 	exit_code="$?"
 	if [ $exit_code -eq '0' ]; then
 		\git "$@"
-	else
-	    return $exit_code;
 	fi
 
 	#if is a default git hook, like post-update set to true, to can be ignored by this script

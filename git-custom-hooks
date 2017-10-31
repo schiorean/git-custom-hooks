@@ -210,10 +210,8 @@ publish()
 
     ###########################################################
 
-	pb_on_same_branch=[ $cur_branch == $br_to_pub ];
-
 #    if we publish on the same branch we dont need to reset the code, just pull the changes
-	if $pb_on_same_branch; then
+	if [ $cur_branch == $br_to_pub ]; then
 
         ######################  PULL  ###########################
 
@@ -304,7 +302,7 @@ publish()
     ######################   CHECKOUT   ######################
 
     #if we dont publish on the same branch, go back to branch where you was before publish
-    if !$pb_on_same_branch; then
+    if [ $cur_branch != $br_to_pub ]; then
         printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
         git checkout "$cur_branch"
 	fi

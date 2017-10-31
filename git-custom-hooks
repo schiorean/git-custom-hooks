@@ -205,7 +205,7 @@ publish()
 	if [ $exit_code -gt "1" ]; then
         return 1;
 	fi
-return 1;
+
 	if [ $cur_branch == $br_to_pub ]; then
 
         printf "\n$BCyan--- Pull changes from repo ---$NC\n"

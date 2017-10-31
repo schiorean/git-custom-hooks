@@ -304,7 +304,7 @@ publish()
     ######################   CHECKOUT   ######################
 
     #if we dont publish on the same branch, go back to branch where you was before publish
-    if [ !$pb_on_same_branch ]; then
+    if !$pb_on_same_branch; then
         printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
         git checkout "$cur_branch"
 	fi

@@ -101,6 +101,8 @@ custom_git() {
 	exit_code="$?"
 	if [ $exit_code -eq '0' ]; then
 		\git "$@"
+	else
+	    return 3;
 	fi
 
 	#if is a default git hook, like post-update set to true, to can be ignored by this script

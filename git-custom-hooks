@@ -10,7 +10,7 @@
 
 
 
-#cd_reminder will print the name of root folder from any git repo when you will change directory on it 
+#cd_reminder will print the name of root folder from any git repo when you will change directory on it
 #to disable this function just comment the next line (put the # at the start of the line)
 
 
@@ -82,7 +82,7 @@ reminder_cd() {
 }
 
 custom_git() {
-	
+
 	#if is a default git hook, like pre-commit set to true, to can be ignored by this script
 	case $1 in
 		commit | push | rebase)
@@ -125,16 +125,16 @@ run_pre_hook() {
 	if [ $1 == 'checkout' ] && [ $2 == '-b' ]; then
         custom_pre_hook="${SCRIPT_DIR}/hooks/pre-branch";
 	fi
-	
+
 	#if pre hook is set on project then execute it and ignore the default one
     if [ -f $def_pre_hook ]; then
-		#if the hook is one of the git default hooks, ignore it because is executed by git 
+		#if the hook is one of the git default hooks, ignore it because is executed by git
 		if [ ! $is_default_hook ]; then
 			#execute pre hook if is custom one
 			$def_pre_hook "$@"
 		fi
 	#if pre hook is not set on the project, check if is set on default hooks folder from this script
-	elif [ -f $custom_pre_hook ]; then 
+	elif [ -f $custom_pre_hook ]; then
 		#execute the general custom pre hook
 		$custom_pre_hook "$@"
 	fi
@@ -154,7 +154,7 @@ run_post_hook() {
             $def_post_hook "$@"
         fi
 	#if post hook is not set on the project, check if is set on default hooks folder from this script
-    elif [ -f $custom_post_hook ]; then 
+    elif [ -f $custom_post_hook ]; then
 		#execute the general custom post hook
         $custom_post_hook "$@"
     fi
@@ -165,103 +165,119 @@ run_post_hook() {
 
 git_commit ()
 {
-	
+
 	#get the current branch
 	branch=$(git branch | sed -n -e 's/\* //p')
 	branch=$(echo "$branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
-	
+
 	message="$*"
-	
+
 	if [[ $branch == [0-9]* ]]
 	then
 		message="#${branch} ${message}";
 	fi
-	
-	custom_git commit --no-edit -am "$message"
-}
 
+	git commit --no-edit -am "$message"
+}
 publish()
 {
 	br_to_pub=$1
 	cur_branch=$(git branch | sed -n -e 's/\* //p')
 	cur_branch=$(echo "$cur_branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
-	message="#${cur_branch} ${*:2}"
-	
+
+     if [[ ${cur_branch} != [0-9]* ]]; then
+	    if [[ ${*:2} == [0-9]* ]]; then
+	        message="#${*:2}"
+	    else
+	        message="${*:2}"
+	    fi
+	else
+	    message="#${cur_branch} ${*:2}"
+	fi
+
 	printf "\n$BCyan--- Commit changes ---$NC\n"
-	
+
 	git commit  --no-edit -am "$message"
 	exit_code="$?"
+
+	printf $exit_code;
 	if [ $exit_code -gt "1" ]; then
-#        printf " ${BRed} Aborted!\n ${NC}"; 
+        printf " ${BRed} Abortedddddddddddddd!\n ${NC}";
         return 1;
 	fi
-	
-	
-	printf "\n$BCyan--- Checkout branch $br_to_pub ---$NC\n"
-	git checkout "$br_to_pub"
 
-    ck_branch=$(git branch | sed -n -e 's/\* //p')
-	ck_branch=$(echo "$ck_branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
+	if [ $cur_branch == $br_to_pub ]; then
 
-	if [ "$ck_branch" != "$br_to_pub" ]; then
-		printf " ${BRed} Aborted!\n ${NC}"; 
-        return 1;
-	fi
-	
-	
-    printf "\n$BCyan--- Fetch changes from remote ---$NC\n"
-    git fetch
+        printf "\n$BCyan--- Pull changes from repo ---$NC\n"
+        git pull
 
-    exit_code="$?"
-	if [ $exit_code -gt "0" ]; then
-		if [ $exit_code -eq "1" ]; then
-		    printf " ${BRed} Aborted!\n ${NC}"; 
+	else
+
+        printf "\n$BCyan--- Checkout branch $br_to_pub ---$NC\n"
+        git checkout "$br_to_pub"
+
+        ck_branch=$(git branch | sed -n -e 's/\* //p')
+        ck_branch=$(echo "$ck_branch" | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
+
+        if [ "$ck_branch" != "$br_to_pub" ]; then
+            printf " ${BRed} Aborted!\n ${NC}";
+            return 1;
         fi
-        return 1;
-	fi
-	
 
-    printf "\n$BCyan--- Reset to origin ---$NC\n"
-    git reset --hard origin/$br_to_pub
-	
-	exit_code="$?"
-	if [ $exit_code -gt "0" ]; then
-		if [ $exit_code -eq "1" ]; then
-		    printf " ${BRed} Aborted!\n ${NC}"; 
+        printf "\n$BCyan--- Fetch changes from remote ---$NC\n"
+        git fetch
+
+        exit_code="$?"
+        if [ $exit_code -gt "0" ]; then
+            if [ $exit_code -eq "1" ]; then
+                printf " ${BRed} Aborted!\n ${NC}";
+            fi
+            return 1;
         fi
-        return 1;
-	fi
-	
-	printf "\n$BCyan--- Merge $cur_branch into $br_to_pub ---$NC\n"
-	git merge "$cur_branch"
-	
-	exit_code="$?"
-	if [ $exit_code -gt "0" ]; then
-		if [ $exit_code -eq "1" ]; then
-		    printf " ${BRed} Aborted!\n ${NC}"; 
+
+
+        printf "\n$BCyan--- Reset to origin ---$NC\n"
+        git reset --hard origin/$br_to_pub
+
+        exit_code="$?"
+        if [ $exit_code -gt "0" ]; then
+            if [ $exit_code -eq "1" ]; then
+                printf " ${BRed} Aborted!\n ${NC}";
+            fi
+            return 1;
         fi
-        
-        printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
-        git checkout "$cur_branch"
-        return 1;
-	fi
-	
+
+        printf "\n$BCyan--- Merge $cur_branch into $br_to_pub ---$NC\n"
+        git merge "$cur_branch"
+
+        exit_code="$?"
+        if [ $exit_code -gt "0" ]; then
+            if [ $exit_code -eq "1" ]; then
+                printf " ${BRed} Aborted!\n ${NC}";
+            fi
+
+            printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
+            git checkout "$cur_branch"
+            return 1;
+        fi
+    fi
+
 	printf "\n$BCyan--- Push changes into $br_to_pub ---$NC\n"
 	git push origin $br_to_pub
-	
+
 	exit_code="$?"
 	if [ $exit_code -gt "0" ]; then
 		if [ $exit_code -eq "1" ]; then
-		    printf " ${BRed} Aborted!\n ${NC}"; 
+		    printf " ${BRed} Aborted!\n ${NC}";
         fi
         return 1;
 	fi
-	
+
 	printf "\n$BCyan--- Checkout branch $cur_branch ---$NC\n"
 	git checkout "$cur_branch"
-}   
+}
 
-   
+
 
 alias git=custom_git
 alias cd=reminder_cd

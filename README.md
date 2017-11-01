@@ -54,7 +54,7 @@ What will execute
 
 
 ### Publish method.
-Usage:
+Usage 1:
 > pb branch_to_publish your custom commit message
 
 What will execute:
@@ -68,9 +68,19 @@ What will execute:
 
 > `git merge branch_where_you_was`
 
-If you have conflicts, all process is stopped and you have to fix the conflicts and crun next commands manually
+If you have conflicts, all process is stopped and you have to fix the conflicts and run next commands manually
 
 > `git push`
 
 > `git checkout branch_where_you_was`
 
+
+Usage 2:
+> pb current_branch your custom commit message
+
+What will execute:
+> `git commit --no-edit -am '#curent_branch your custom commit message'`
+
+> `git pull`
+
+> `git push`

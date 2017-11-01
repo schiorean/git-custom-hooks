@@ -81,8 +81,11 @@ Usage 2:
 > pb current_branch your custom commit message
 
 What will execute:
-> `git commit --no-edit -am '#curent_branch your custom commit message'`
+> `git commit --no-edit -am 'your custom commit message'`
 
 > `git pull`
 
 > `git push`
+
+
+If commit message is numeric, # will be added in front.

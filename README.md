@@ -73,8 +73,9 @@ If you have conflicts, all process is stopped and you have to fix the conflicts 
 > `git push`
 
 > `git checkout branch_where_you_was`
- 
-  
+
+<br/>
+<br/>
 
 Usage 2:
 > pb current_branch your custom commit message

@@ -60,6 +60,7 @@ source $SCRIPT_DIR/git-prompt.sh
 #PROMPT_COMMAND='__git_ps1 "\e[0;32m\u@\h \e[0;33m\w" "\e[0m\n\\\$ "'
 
 __git_complete pb _git_checkout
+__git_complete go _git_checkout
 
 get_repo_data(){
 	repo_info="$(\git rev-parse --git-dir HEAD 2>/dev/null)"

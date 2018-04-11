@@ -180,6 +180,17 @@ git_commit ()
 		message="#${branch} ${message}";
 	fi
 
+	if [ -z "$message"]; then
+	    printf "${BRed}Commit message is empty!\n${NC}Please  write a message!\n";
+        while true; do
+          read new_message
+          case $new_message in
+              "" ) echo "Please  write a message!";;
+              * ) message=$new_message; break;;
+          esac
+        done
+	fi
+
 	git commit --no-edit -am "$message"
 }
 publish()

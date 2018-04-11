@@ -200,7 +200,7 @@ publish()
 	fi
 
 	if [ -z "$message"]; then
-	    printf "Commit message is empty!\nPlease  write a message!\n";
+	    printf "${BRed}Commit message is empty!\n${NC}Please  write a message!\n";
         while true; do
           read new_message
           case $new_message in

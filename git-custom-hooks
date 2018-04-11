@@ -180,7 +180,7 @@ git_commit ()
 		message="#${branch} ${message}";
 	fi
 
-	if [ -z "$message"]; then
+	if [ -z "$message" ]; then
 	    printf "${BRed}Commit message is empty!\n${NC}Please  write a message!\n";
         while true; do
           read new_message
@@ -210,7 +210,7 @@ publish()
 	    message="#${cur_branch} ${*:2}"
 	fi
 
-	if [ -z "$message"]; then
+	if [ -z "$message" ]; then
 	    printf "${BRed}Commit message is empty!\n${NC}Please  write a message!\n";
         while true; do
           read new_message

@@ -46,41 +46,7 @@ On_White='\e[47m'       # White
 
 NC="\e[0m"               # Color Reset
 
-SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
-# Disable openinig the editor on git merge
-GIT_MERGE_AUTOEDIT=no
-export GIT_MERGE_AUTOEDIT
-
-source $SCRIPT_DIR/figlet
-source $SCRIPT_DIR/git-completion.bash
-source $SCRIPT_DIR/git-prompt.sh
-
-#GIT_PS1_SHOWCOLORHINTS=true
-#PROMPT_COMMAND='__git_ps1 "\e[0;32m\u@\h \e[0;33m\w" "\e[0m\n\\\$ "'
-
 __git_complete pb _git_checkout
-__git_complete go _git_checkout
-
-get_repo_data(){
-	repo_info="$(\git rev-parse --git-dir HEAD 2>/dev/null)"
-	rev_parse_exit_code="$?"
-	git_dir_path="${repo_info%$'\n'*}"
-}
-
-get_repo_data
-
-reminder_cd() {
-	builtin cd "$@" && {
-		#show the project name with figlet only if the project is not the current script folder because we use cd command on line 49 to get the current script path
-		get_repo_data
-		#if git_dir_path is .git that mean we are on root folder of project
-		if [[ $git_dir_path == ".git" ]] && [[ $@ != "$( dirname "${BASH_SOURCE[0]}")" ]]
-		then
-			figlet -c=BRed ${PWD##*/}
-		fi
-	}
-}
 
 custom_git() {
 
@@ -334,6 +300,5 @@ publish()
 
 
 alias git=custom_git
-alias cd=reminder_cd
 alias pb=publish
 alias gc=git_commit
